@@ -45,7 +45,7 @@ pipeline {
         stage('E2E') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.39.0-noble'
+                    image 'mcr.microsoft.com/playwright:v1.51.0-noble'
                     args '--ipc=host'
                     /*Initially, I had the entire line like this:  
                     docker pull mcr.microsoft.com/playwright:v1.51.0-noble
@@ -56,6 +56,7 @@ pipeline {
             }
             steps {
                 sh '''
+                  npm install @playwright/test@1.51.0
                   npm install -g serve
                   serve -s build & 
                   sleep 10 
