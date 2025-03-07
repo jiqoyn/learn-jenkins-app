@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+        // this is my build stage
+
+        /*
+        this is another way to write comments, but 
+        can span lines
+         */
         stage('Build') {
             agent {
                 docker {
