@@ -56,7 +56,7 @@ pipeline {
             }
             steps {
                 sh '''
-                  npm install @playwright/test@1.51.0
+                  npm install --save-dev @playwright/test@1.51.0
                   npm install -g serve
                   serve -s build & 
                   sleep 10 
@@ -67,7 +67,7 @@ pipeline {
     }
     post {
         always {
-            junit 'test-results/junit.xml'
+            junit '**/test-results/*.xml'
         }
     }
 }
