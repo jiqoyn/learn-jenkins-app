@@ -8,7 +8,7 @@ pipeline {
         this is another way to write comments, but 
         can span lines
          */
-        stage('Build') {
+        /* stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -25,7 +25,7 @@ pipeline {
                     ls -la        
                 '''
             }
-        }
+        } */
         stage('Test') {
             agent {
                 docker {
