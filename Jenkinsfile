@@ -56,19 +56,26 @@ pipeline {
             }
             steps {
                 sh '''
-                  npm install --save-dev @playwright/test@1.51.0
-                  npm install -g serve
-                  serve -s build & 
-                  sleep 10 
-                  npx playwright test     
-                '''
-            }
-        }
+                    npm install --save-dev @playwright/test@1.51.0
+                    npx playwright install
+                    npm install -g serve
+                    serve -s build & 
+
+                    # Wait for the server
+                    for i in {1..15}; do 
+                        curl -s http://localhost:3000 && break
+                        echo "Waiting for server..."
+                        sleep 2
+                    done
+
+                    # Run Playwright with JUnit report output
+                    npx playwright test --reporter=junit,test-results/playwright-results.xml
+                    '''
+                }
     }
     post {
-        always {
-            junit '**/test-results/*.xml'
+    always {
+        junit '**/test-results/*.xml' // Ensure all XML reports are captured
         }
     }
 }
-
