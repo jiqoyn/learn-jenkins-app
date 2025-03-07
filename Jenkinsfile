@@ -29,7 +29,9 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm test        
+                    echo 'Starting Testing Phase'
+                    npm test
+                    test -f build/index.html     
                 '''
             }
         }
