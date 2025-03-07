@@ -50,7 +50,7 @@ pipeline {
                     docker pull mcr.microsoft.com/playwright:v1.51.0-noble
                     but was getting errors. checked his video and he only had starting at mcr. not sure why, i'll 
                     ask gpt later*/
-                    reuseNode true
+                    reuseNode true            
                 }
             }
             steps {
