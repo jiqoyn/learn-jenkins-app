@@ -3,9 +3,9 @@ pipeline{
     environment {
         NETLIFY_SITE_ID = '6e9ec4b6-860f-486f-9343-08ef604712a1'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token') /* this is the token we created within netlify, and stored with
-        jenkins under credentials. this is to keep the token secured */
-        
-    }
+        jenkins under credentials. this is to keep the token secured */      
+        }
+    
     stages{
         stage("Build"){
             agent {
@@ -14,6 +14,7 @@ pipeline{
                     reuseNode true
                 }
             }
+            
             steps {
                 sh '''
                     #ls -la
@@ -34,7 +35,7 @@ pipeline{
                             image 'node:18-alpine'
                             reuseNode true
                         }
-            }
+                    }
                     steps {
                         sh '''
                             echo 'Starting Testing Phase'
@@ -48,7 +49,7 @@ pipeline{
                             
                         }
                     }            
-        }
+                }
                 stage('E2E'){
                     agent {
                         docker {
@@ -73,14 +74,13 @@ pipeline{
                             npx playwright test --reporter=line
                             #testing comments
                             '''
-                        }
-                        post {
-                            always {
-                                
-                                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    }
+                    post {
+                        always {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     } 
-            }
+                }
             }
         }
 
@@ -102,6 +102,38 @@ pipeline{
                 '''
             }
         } 
+        stage('Prod E2E'){
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.51.0-noble'
+                            args '--ipc=host'
+                            /*Initially, I had the entire line like this:  
+                            docker pull mcr.microsoft.com/playwright:v1.51.0-noble
+                            but was getting errors. checked his video and he only had starting at mcr. not sure why, i'll 
+                            ask gpt later. it turns out the jenkins software knows to use the docker pull command*/
+                            reuseNode true            
+                        }
+                    }
+                    environment {
+                        CI_ENVIRONMENT_URL = 'jolly-youtiao-2bb5cf.netlify.app'
+                    }
+                     steps {
+                        /*for all installation and arguments, there are docs. we went over them, and the links to the main 
+                        set of docs for the commands below are within onenote under links for jenkins.  */
+                        sh '''
+                            npm install  @playwright/test@1.51.0
+                            npx playwright install                       
+                            npx playwright test --reporter=line
+                            #testing comments
+                            '''
+                        }
+                        post {
+                            always {
+                                
+                                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    } 
+            }
     }
        
         
