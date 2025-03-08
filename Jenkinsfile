@@ -52,11 +52,11 @@ pipeline{
                 set of docs for the commands below are within onenote under links for jenkins.  */
                 sh '''
                     npm install  @playwright/test@1.51.0
-                    npx playwright install --reporter=line
+                    npx playwright install 
                     npm install -g serve
                     serve -s build &   
                     sleep 10                
-                    npx playwright test
+                    npx playwright test --reporter=line
                     '''
                 }
     }
