@@ -48,9 +48,11 @@ pipeline{
                 }
             }
             steps {
+                /*for all installation and arguments, there are docs. we went over them, and the links to the main 
+                set of docs for the commands below are within onenote under links for jenkins.  */
                 sh '''
                     npm install  @playwright/test@1.51.0
-                    npx playwright install
+                    npx playwright install --reporter=line
                     npm install -g serve
                     serve -s build &   
                     sleep 10                
