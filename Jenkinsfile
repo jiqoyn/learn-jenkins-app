@@ -51,7 +51,9 @@ pipeline{
                     }            
                 }
                 stage('E2E'){
+                    
                     agent {
+                        
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.51.0-noble'
                             args '--ipc=host'
@@ -62,6 +64,7 @@ pipeline{
                             reuseNode true            
                         }
                     }
+                     
                      steps {
                         /*for all installation and arguments, there are docs. we went over them, and the links to the main 
                         set of docs for the commands below are within onenote under links for jenkins.  */
@@ -75,6 +78,7 @@ pipeline{
                             #testing comments
                             '''
                     }
+                    
                     post {
                         always {
                             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
@@ -91,6 +95,7 @@ pipeline{
                     reuseNode true
                 }
             }
+            
             steps {
                 sh '''
                      npm install netlify-cli -g
@@ -102,8 +107,11 @@ pipeline{
                 '''
             }
         } 
+        
         stage('Prod E2E'){
+                    
                     agent {
+                        
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.51.0-noble'
                             args '--ipc=host'
@@ -114,10 +122,12 @@ pipeline{
                             reuseNode true            
                         }
                     }
+                    
                     environment {
                         CI_ENVIRONMENT_URL = 'https://jolly-youtiao-2bb5cf.netlify.app/'
                     }
-                     steps {
+                    
+                    steps {
                         /*for all installation and arguments, there are docs. we went over them, and the links to the main 
                         set of docs for the commands below are within onenote under links for jenkins.  */
                         sh '''
@@ -127,10 +137,10 @@ pipeline{
                             #testing comments
                             '''
                         }
-                        post {
-                            always {
-                                
-                                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                    
+                    post {
+                        always {                              
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     } 
             }
