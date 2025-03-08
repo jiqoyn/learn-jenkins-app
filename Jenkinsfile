@@ -1,14 +1,8 @@
-pipeline {
+pipeline{
     agent any
 
-    stages {
-        // this is my build stage
-
-        /*
-        this is another way to write comments, but 
-        can span lines
-         */
-        /* stage('Build') {
+    stages{
+        stage("Build"){
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -25,8 +19,9 @@ pipeline {
                     ls -la        
                 '''
             }
-        } */
-        stage('Test') {
+        }
+    }
+    stage('Test') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -41,9 +36,8 @@ pipeline {
                 '''
             }
         }
-
-        stage('E2E') {
-            agent {
+    stage('E2E'){
+        agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.51.0-noble'
                     args '--ipc=host'
@@ -74,9 +68,9 @@ pipeline {
                 }
     }
     post {
-    always {
-        junit '**/test-results/*.xml' // Ensure all XML reports are captured
+        always {
+            junit '**/test-results.xml'
         }
     }
-}
+        
 }
