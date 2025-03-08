@@ -21,7 +21,7 @@ pipeline{
             }
         }
     }
-    stage('Test') {
+        stage('Test') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -36,8 +36,8 @@ pipeline{
                 '''
             }
         }
-    stage('E2E'){
-        agent {
+        stage('E2E'){
+            agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.51.0-noble'
                     args '--ipc=host'
