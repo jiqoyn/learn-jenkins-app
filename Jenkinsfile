@@ -49,11 +49,12 @@ pipeline{
             }
             steps {
                 sh '''
-                    npm install --save-dev @playwright/test@1.51.0
+                    npm install  @playwright/test@1.51.0
                     npx playwright install
                     npm install -g serve
-                    serve -s build &                   
-                    npx playwright test --reporter=junit,test-results/playwright-results.xml
+                    serve -s build &   
+                    sleep 10                
+                    npx playwright test
                     '''
                 }
     }
