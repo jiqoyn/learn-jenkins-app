@@ -23,7 +23,7 @@ pipeline{
 
         stage('Run Tests'){
             parallel {        
-                stage('Test') {
+                stage('Unit test') {
                     agent {
                         docker {
                             image 'node:18-alpine'
@@ -50,7 +50,7 @@ pipeline{
                             reuseNode true            
                         }
                     }
-                    steps {
+                     steps {
                         /*for all installation and arguments, there are docs. we went over them, and the links to the main 
                         set of docs for the commands below are within onenote under links for jenkins.  */
                         sh '''
@@ -64,8 +64,8 @@ pipeline{
                         }
             }
             }
-                    }
         }
+    }
        
         
     post {
