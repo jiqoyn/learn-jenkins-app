@@ -53,16 +53,7 @@ pipeline{
                     npm install --save-dev @playwright/test@1.51.0
                     npx playwright install
                     npm install -g serve
-                    serve -s build & 
-
-                    # Wait for the server
-                    for i in {1..15}; do 
-                        curl -s http://localhost:3000 && break
-                        echo "Waiting for server..."
-                        sleep 2
-                    done
-
-                    # Run Playwright with JUnit report output
+                    serve -s build &                   
                     npx playwright test --reporter=junit,test-results/playwright-results.xml
                     '''
                 }
