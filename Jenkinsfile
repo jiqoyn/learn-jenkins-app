@@ -115,7 +115,7 @@ pipeline{
                         }
                     }
                     environment {
-                        CI_ENVIRONMENT_URL = 'jolly-youtiao-2bb5cf.netlify.app'
+                        CI_ENVIRONMENT_URL = 'https://jolly-youtiao-2bb5cf.netlify.app/'
                     }
                      steps {
                         /*for all installation and arguments, there are docs. we went over them, and the links to the main 
