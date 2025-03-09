@@ -104,9 +104,16 @@ pipeline{
                     netlify status   
                     netlify deploy --dir=build 
                     #comment
-                '''
+                '''               
             }
         }
+
+        stage('Approval') {
+            steps {
+                input message: 'Are you ready to deploy? ', ok: 'Yes I\'m ready'
+            }
+        }       
+
         stage("Deploy Prod"){
             agent {
                 docker {
