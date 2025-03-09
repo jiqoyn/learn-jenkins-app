@@ -155,7 +155,7 @@ pipeline{
                             npx playwright test --reporter=line
                             #testing comments
                             '''
-                        }
+                    }
                     
                     post {
                         always {                              
