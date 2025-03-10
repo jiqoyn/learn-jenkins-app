@@ -103,11 +103,43 @@ pipeline{
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     netlify status   
                     netlify deploy --dir=build --json > deploy-output.json
-                    node-jq -r '.deploy_url' deploy-output.json
-                '''               
+                '''  
+            script {
+                env.STAGING_URL = sh(script: "node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
+            }             
             }
         }
-
+        stage('Stageing E2E'){
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.51.0-noble'
+                    args '--ipc=host'
+                    /*Initially, I had the entire line like this:  
+                    docker pull mcr.microsoft.com/playwright:v1.51.0-noble
+                    but was getting errors. checked his video and he only had starting at mcr. not sure why, i'll 
+                    ask gpt later. it turns out the jenkins software knows to use the docker pull command*/
+                    reuseNode true            
+                }
+            }
+                environment {
+                    CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+                }
+                steps {
+                    /*for all installation and arguments, there are docs. we went over them, and the links to the main 
+                    set of docs for the commands below are within onenote under links for jenkins.  */
+                    sh '''
+                        npm install  @playwright/test@1.51.0
+                        npx playwright install                       
+                        npx playwright test --reporter=line
+                        #testing comments
+                        '''
+                }
+                post {
+                    always {                              
+                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Staging E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                    }
+                } 
+        }
         stage('Approval'){
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
@@ -168,7 +200,7 @@ pipeline{
                     
                 post {
                     always {                              
-                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'prod E2E Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
                 } 
         }
