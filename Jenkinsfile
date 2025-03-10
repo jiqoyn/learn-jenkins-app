@@ -98,12 +98,12 @@ pipeline{
             
             steps {
                 sh '''
-                     npm install netlify-cli -g
+                    npm install netlify-cli -g node-jq
                     netlify --version 
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     netlify status   
-                    netlify deploy --dir=build 
-                    #comment
+                    netlify deploy --dir=build --json > deploy-output.json
+                    node-jq -r '.deploy_url' deploy-output.json
                 '''               
             }
         }
